@@ -1,4 +1,4 @@
-export type OrderStatus = "ready" | "preparing" | "served" | "cancelled";
+export type OrderStatus = "new" | "taken" | "completed";
 
 export interface OrderItem {
   name: string;
@@ -14,8 +14,11 @@ export interface Order {
   items: OrderItem[];
   amount: number;
   status: OrderStatus;
+  notes?: string;
   createdAt: string;
-  servedAt?: string;
+  takenAt?: string;
+  takenBy?: string;
+  completedAt?: string;
 }
 
 export interface Staff {

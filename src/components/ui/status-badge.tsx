@@ -1,17 +1,15 @@
 import type { OrderStatus } from "@/types";
 
 const styles: Record<OrderStatus, string> = {
-  ready: "bg-primary/10 text-primary ring-primary/20",
-  preparing: "bg-warning/15 text-warning-foreground ring-warning/30",
-  served: "bg-success/10 text-success ring-success/20",
-  cancelled: "bg-destructive/10 text-destructive ring-destructive/20",
+  new: "bg-primary/10 text-primary ring-primary/20",
+  taken: "bg-warning/15 text-warning-foreground ring-warning/30",
+  completed: "bg-success/10 text-success ring-success/20",
 };
 
 const labels: Record<OrderStatus, string> = {
-  ready: "Ready",
-  preparing: "Preparing",
-  served: "Served",
-  cancelled: "Cancelled",
+  new: "New",
+  taken: "Taken",
+  completed: "Completed",
 };
 
 export function StatusBadge({ status }: { status: OrderStatus }) {

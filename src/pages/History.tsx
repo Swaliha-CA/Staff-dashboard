@@ -6,11 +6,12 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { servedOrders } from "@/data/orders";
+import { useOrders } from "@/store/ordersStore";
 
 const PAGE_SIZE = 8;
 
 export default function HistoryPage() {
+  const orders = useOrders();
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(1);
 
@@ -18,19 +19,27 @@ export default function HistoryPage() {
     document.title = "Order History — Canteen Staff";
   }, []);
 
+  const completed = useMemo(
+    () =>
+      orders
+        .filter((o) => o.status === "completed")
+        .sort((a, b) => (b.completedAt ?? "").localeCompare(a.completedAt ?? "")),
+    [orders],
+  );
+
   const filtered = useMemo(
     () =>
-      servedOrders.filter((o) =>
+      completed.filter((o) =>
         [o.id, o.token, o.customer].join(" ").toLowerCase().includes(query.toLowerCase()),
       ),
-    [query],
+    [completed, query],
   );
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const safePage = Math.min(page, totalPages);
   const slice = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
 
   return (
-    <AppShell title="Order History" subtitle={`${filtered.length} served today`}>
+    <AppShell title="Order History" subtitle={`${filtered.length} completed`}>
       <Card className="border-border/70 p-4 shadow-[var(--shadow-soft)]">
         <div className="relative">
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -55,7 +64,7 @@ export default function HistoryPage() {
               <TableHead>Token</TableHead>
               <TableHead>Customer</TableHead>
               <TableHead className="text-center">Items</TableHead>
-              <TableHead>Served Time</TableHead>
+              <TableHead>Completed</TableHead>
               <TableHead>Status</TableHead>
             </TableRow>
           </TableHeader>
@@ -63,7 +72,7 @@ export default function HistoryPage() {
             {slice.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={6} className="py-10 text-center text-sm text-muted-foreground">
-                  No history matches your search.
+                  No completed orders yet.
                 </TableCell>
               </TableRow>
             ) : (
@@ -74,7 +83,9 @@ export default function HistoryPage() {
                   <TableCell>{o.customer}</TableCell>
                   <TableCell className="text-center">{o.items.reduce((s, i) => s + i.quantity, 0)}</TableCell>
                   <TableCell className="text-muted-foreground">
-                    {new Date(o.servedAt ?? o.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                    {o.completedAt
+                      ? new Date(o.completedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+                      : "—"}
                   </TableCell>
                   <TableCell><StatusBadge status={o.status} /></TableCell>
                 </TableRow>

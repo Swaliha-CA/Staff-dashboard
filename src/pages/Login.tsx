@@ -20,7 +20,7 @@ export default function LoginPage() {
     e.preventDefault();
     setLoading(true);
     window.setTimeout(() => {
-      navigate("/dashboard");
+      navigate("/orders", { replace: true });
     }, 400);
   }
 

@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, ListOrdered, ScanLine, History, User } from "lucide-react";
+import { ListOrdered, ScanLine, History, Settings } from "lucide-react";
 import type { ComponentType, SVGProps } from "react";
 
 interface NavItem {
@@ -9,11 +9,10 @@ interface NavItem {
 }
 
 const items: NavItem[] = [
-  { to: "/dashboard", label: "Dashboard", Icon: LayoutDashboard },
   { to: "/orders", label: "Orders", Icon: ListOrdered },
   { to: "/scanner", label: "Scanner", Icon: ScanLine },
   { to: "/history", label: "History", Icon: History },
-  { to: "/profile", label: "Profile", Icon: User },
+  { to: "/settings", label: "Settings", Icon: Settings },
 ];
 
 export function BottomNavigation() {
@@ -26,7 +25,7 @@ export function BottomNavigation() {
     >
       <ul className="mx-auto flex max-w-3xl items-stretch justify-between px-2">
         {items.map(({ to, label, Icon }) => {
-          const active = pathname === to || (to !== "/dashboard" && pathname.startsWith(to));
+          const active = pathname === to || pathname.startsWith(`${to}/`);
           return (
             <li key={to} className="flex-1">
               <Link
